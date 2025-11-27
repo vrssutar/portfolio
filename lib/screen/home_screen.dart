@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/model/education_model.dart';
 import 'package:portfolio/model/experiance_model.dart';
+import 'package:portfolio/model/header_item_model.dart';
 import 'package:portfolio/model/project_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -106,31 +107,103 @@ Take the hassle out of tracking student attendance with our smart and intuitive 
     ),
   ];
 
+  List<HeaderItemModel> headerItemList = [
+    HeaderItemModel(
+      title: "LinkedIn",
+      imagePath: "./asset/image/linkedin.png",
+      link: "",
+    ),
+    HeaderItemModel(
+      title: "Google Play",
+      imagePath: "./asset/image/google_play_store.png",
+      link: "",
+    ),
+    HeaderItemModel(
+      title: "GitHub",
+      imagePath: "./asset/image/github.png",
+      link: "",
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
+      appBar: isMobile ? AppBar() : null,
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            pinned: true,
-            elevation: 4,
-            automaticallyImplyLeading: false,
-            title: _navbarWidget(isMobile),
-          ),
+          isMobile
+              ? SliverAppBar(
+                  pinned: true,
+                  elevation: 4,
+                  automaticallyImplyLeading: false,
+                  title: Text("Portfolio"),
+                )
+              : SliverAppBar(
+                  pinned: true,
+                  elevation: 4,
+                  automaticallyImplyLeading: false,
+                  title: _headerWidget(isMobile),
+                ),
           SliverToBoxAdapter(child: _heroSectionWidget(isMobile)),
           SliverToBoxAdapter(child: _experienceSectionWidget(isMobile)),
           SliverToBoxAdapter(child: _projectSectionWidget(isMobile)),
           SliverToBoxAdapter(child: _educationSectionWidget(isMobile)),
         ],
       ),
+      drawer: isMobile ? Drawer(child: _headerWidget(isMobile)) : null,
     );
   }
 
-  Widget _navbarWidget(bool isMobile) {
+  Widget _headerWidget(bool isMobile) {
     if (isMobile) {
       return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Portfolio",
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List<Widget>.generate(headerItemList.length, (index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextButton.icon(
+                  icon: Image.asset(
+                    headerItemList[index].imagePath,
+                    height: 28,
+                    width: 28,
+                  ),
+                  label: Text(headerItemList[index].title),
+                  onPressed: () => openUrlNewTab(headerItemList[index].link),
+                ),
+              );
+            }).toList(),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton.icon(
+              icon: Icon(Icons.download_rounded),
+              onPressed: () => openUrlNewTab(
+                "https://drive.google.com/file/d/1uKF30dnZnjKpLC7C33nVqtSgM4ekCnkO/view?usp=sharing",
+              ),
+              label: Text("Resume"),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             "Portfolio",
@@ -138,85 +211,29 @@ Take the hassle out of tracking student attendance with our smart and intuitive 
               context,
             ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 6),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 8,
-            children: [
-              _navButton(
-                "LinkedIn",
-                "./asset/image/linkedin.png",
-                "https://www.linkedin.com/in/vrs30/",
-              ),
-              _navButton(
-                "GitHub",
-                "./asset/image/github.png",
-                "https://github.com/vrs600",
-              ),
-              _navButton(
-                "Google Play",
-                "./asset/image/google_play_store.png",
-                "https://play.google.com/store/apps/developer?id=Vinayak+Sutar",
-              ),
-              ElevatedButton.icon(
-                icon: Icon(Icons.download_rounded),
-                label: Text("Resume"),
-                onPressed: () => openUrlNewTab(
-                  "https://drive.google.com/file/d/1uKF30dnZnjKpLC7C33nVqtSgM4ekCnkO/view?usp=sharing",
+          Row(
+            children: List<Widget>.generate(headerItemList.length, (index) {
+              return TextButton.icon(
+                icon: Image.asset(
+                  headerItemList[index].imagePath,
+                  height: 28,
+                  width: 28,
                 ),
-              ),
-            ],
+                label: Text(headerItemList[index].title),
+                onPressed: () => openUrlNewTab(headerItemList[index].link),
+              );
+            }).toList(),
+          ),
+          ElevatedButton.icon(
+            icon: Icon(Icons.download_rounded),
+            onPressed: () => openUrlNewTab(
+              "https://drive.google.com/file/d/1uKF30dnZnjKpLC7C33nVqtSgM4ekCnkO/view?usp=sharing",
+            ),
+            label: Text("Resume"),
           ),
         ],
       );
     }
-
-    // Desktop layout
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          "Portfolio",
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
-        ),
-        Row(
-          children: [
-            _navButton(
-              "LinkedIn",
-              "./asset/image/linkedin.png",
-              "https://www.linkedin.com/in/vrs30/",
-            ),
-            _navButton(
-              "GitHub",
-              "./asset/image/github.png",
-              "https://github.com/vrs600",
-            ),
-            _navButton(
-              "Google Play",
-              "./asset/image/google_play_store.png",
-              "https://play.google.com/store/apps/developer?id=Vinayak+Sutar",
-            ),
-          ],
-        ),
-        ElevatedButton.icon(
-          icon: Icon(Icons.download_rounded),
-          onPressed: () => openUrlNewTab(
-            "https://drive.google.com/file/d/1uKF30dnZnjKpLC7C33nVqtSgM4ekCnkO/view?usp=sharing",
-          ),
-          label: Text("Resume"),
-        ),
-      ],
-    );
-  }
-
-  Widget _navButton(String label, String icon, String url) {
-    return TextButton.icon(
-      icon: Image.asset(icon, width: 24, height: 24),
-      onPressed: () => openUrlNewTab(url),
-      label: Text(label),
-    );
   }
 
   Widget _heroSectionWidget(bool isMobile) {
@@ -285,33 +302,48 @@ Take the hassle out of tracking student attendance with our smart and intuitive 
             children: List<Widget>.generate(_educationList.length, (index) {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: InkWell(
-                  onTap: () {},
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        _educationList[index].instituteName!,
+                        style: Theme.of(context).textTheme.titleMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Text(_educationList[index].universityName!),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Text(_educationList[index].duration!),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        color: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: 0.2),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         child: Text(
-                          _educationList[index].instituteName!,
-                          style: Theme.of(context).textTheme.titleMedium!
-                              .copyWith(fontWeight: FontWeight.bold),
+                          _educationList[index].grade!,
+                          style: Theme.of(context).textTheme.labelLarge!
+                              .copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor,
+                              ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Text(_educationList[index].universityName!),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Text(_educationList[index].duration!),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Text(_educationList[index].grade!),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             }),
@@ -360,8 +392,8 @@ Take the hassle out of tracking student attendance with our smart and intuitive 
             children: List<Widget>.generate(_experianceList.length, (index) {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: InkWell(
-                  onTap: () {},
+                child: SizedBox(
+                  width: 380,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -370,6 +402,7 @@ Take the hassle out of tracking student attendance with our smart and intuitive 
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
+                              softWrap: true,
                               _experianceList[index].companyName!,
                               style: Theme.of(context).textTheme.titleMedium!
                                   .copyWith(fontWeight: FontWeight.bold),
