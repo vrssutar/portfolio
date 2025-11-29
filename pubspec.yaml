@@ -64,6 +64,8 @@ flutter:
     - ./asset/image/do_it_logo.png
     - ./asset/image/mark_present_logo.png
     - ./asset/image/doubtly_logo.png
+    - ./asset/image/x_logo.png
+    - ./asset/image/instagram_logo.png
 
   fonts:
     - family: Poppins
