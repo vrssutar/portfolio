@@ -2,6 +2,7 @@ import 'package:portfolio/model/education_model.dart';
 import 'package:portfolio/model/experiance_model.dart';
 import 'package:portfolio/model/header_item_model.dart';
 import 'package:portfolio/model/project_model.dart';
+import 'package:portfolio/model/skill_category.dart';
 import 'package:portfolio/model/social_item.dart';
 
 final List<ExperianceModel> experianceList = [
@@ -125,5 +126,17 @@ List<SocialItem> socialList = [
     link: "https://x.com/vrsutar30",
     title: "X",
     imagePath: "./asset/image/x_logo.png",
+  ),
+];
+
+final List<SkillCategory> skillCategories = [
+  SkillCategory(title: "Languages & Frameworks", skills: ["Dart", "Flutter"]),
+  SkillCategory(
+    title: "Databases & Backend",
+    skills: ["Firebase", "SQL", "NoSQL"],
+  ),
+  SkillCategory(
+    title: "Tools & Platforms",
+    skills: ["GitHub", "Play Store Deployment", "REST API Integration"],
   ),
 ];

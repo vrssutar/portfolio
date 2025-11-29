@@ -10,15 +10,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  double _screenWidth = 0;
+  bool _isMobile = false;
   @override
   Widget build(BuildContext context) {
-    bool isMobile = MediaQuery.of(context).size.width < 600;
-
+    _isMobile = MediaQuery.of(context).size.width < 600;
+    _screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: isMobile ? AppBar() : null,
+      appBar: _isMobile ? AppBar() : null,
       body: CustomScrollView(
         slivers: [
-          isMobile
+          _isMobile
               ? SliverAppBar(
                   pinned: true,
                   elevation: 4,
@@ -29,21 +31,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   pinned: true,
                   elevation: 4,
                   automaticallyImplyLeading: false,
-                  title: _headerWidget(isMobile),
+                  title: _headerWidget(),
                 ),
-          SliverToBoxAdapter(child: _heroSectionWidget(isMobile)),
-          SliverToBoxAdapter(child: _experienceSectionWidget(isMobile)),
-          SliverToBoxAdapter(child: _projectSectionWidget(isMobile)),
-          SliverToBoxAdapter(child: _educationSectionWidget(isMobile)),
+          SliverToBoxAdapter(child: _heroSectionWidget()),
+          SliverToBoxAdapter(child: _experienceSectionWidget()),
+          SliverToBoxAdapter(child: _projectSectionWidget()),
+          SliverToBoxAdapter(child: _technicalSkillsSection(context)),
+          SliverToBoxAdapter(child: _educationSectionWidget()),
           SliverToBoxAdapter(child: _socialLinksSection()),
         ],
       ),
-      drawer: isMobile ? Drawer(child: _headerWidget(isMobile)) : null,
+      drawer: _isMobile ? Drawer(child: _headerWidget()) : null,
     );
   }
 
-  Widget _headerWidget(bool isMobile) {
-    if (isMobile) {
+  Widget _headerWidget() {
+    if (_isMobile) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,15 +125,15 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Widget _heroSectionWidget(bool isMobile) {
+  Widget _heroSectionWidget() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: isMobile ? 24 : 48),
+      padding: EdgeInsets.symmetric(vertical: _isMobile ? 24 : 48),
       child: Column(
         children: [
           Text(
             "Vinayak Ramesh Sutar",
             textAlign: TextAlign.center,
-            style: isMobile
+            style: _isMobile
                 ? Theme.of(context).textTheme.headlineMedium
                 : Theme.of(context).textTheme.displayLarge,
           ),
@@ -138,16 +141,29 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             "Flutter Developer",
             textAlign: TextAlign.center,
-            style: isMobile
+            style: _isMobile
                 ? Theme.of(context).textTheme.titleLarge
                 : Theme.of(context).textTheme.displaySmall,
           ),
+          SizedBox(height: 10),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                color: Theme.of(context).primaryColor,
+              ),
+              width: _screenWidth * 0.3,
+              height: 5,
+            ),
+          ),
+          SizedBox(height: 10),
         ],
       ),
     );
   }
 
-  Widget? _educationSectionWidget(bool isMobile) {
+  Widget? _educationSectionWidget() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -239,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget? _experienceSectionWidget(bool isMobile) {
+  Widget? _experienceSectionWidget() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -342,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _projectSectionWidget(bool isMobile) {
+  Widget _projectSectionWidget() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -370,36 +386,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    isMobile
+                    _isMobile
                         ? Column(
                             children: [
-                              _projectImage(p.projectImage!, 64),
+                              _projectImage(p.projectImage, 64),
                               SizedBox(height: 8),
-                              Text(
-                                p.projectName!,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall!
-                                    .copyWith(fontWeight: FontWeight.bold),
+                              Row(
+                                children: [
+                                  Text(
+                                    p.projectName,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall!
+                                        .copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ],
                           )
                         : Row(
                             children: [
-                              _projectImage(p.projectImage!, 32),
+                              _projectImage(p.projectImage, 32),
                               SizedBox(width: 12),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    p.projectName!,
+                                    p.projectName,
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineLarge!
                                         .copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    p.projectTagline!,
+                                    p.projectTagline,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleSmall!
@@ -411,13 +431,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
 
                     SizedBox(height: 8),
-                    Text(p.projectDescription!),
+                    Text(p.projectDescription),
 
                     Wrap(
                       spacing: 8,
-                      children: p.projectTechStack!
+                      children: p.projectTechStack
                           .map((tech) => Chip(label: Text(tech)))
                           .toList(),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: OutlinedButton(
+                        onPressed: () => openUrlNewTab(p.projectLink),
+                        child: Text("Install ${p.projectName}"),
+                      ),
                     ),
                   ],
                 ),
@@ -471,7 +498,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                    color: Theme.of(
+                      context,
+                    ).primaryColor.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.all(Radius.circular(25)),
                   ),
                   child: Padding(
@@ -509,6 +538,71 @@ class _HomeScreenState extends State<HomeScreen> {
           }),
         ),
       ],
+    );
+  }
+
+  Widget _technicalSkillsSection(BuildContext context) {
+    Color primary = Theme.of(context).primaryColor;
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: primary.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                padding: const EdgeInsets.all(8),
+                child: Icon(Icons.code_rounded, color: primary),
+              ),
+              SizedBox(width: 12),
+              Text(
+                "Technical Skills",
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          /// DYNAMIC LIST HERE
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(skillCategories.length, (index) {
+              final category = skillCategories[index];
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      category.title,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: category.skills
+                          .map((skill) => Chip(label: Text(skill)))
+                          .toList(),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 }
