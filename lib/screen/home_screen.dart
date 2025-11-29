@@ -82,7 +82,7 @@ Take the hassle out of tracking student attendance with our smart and intuitive 
       courseName: "Master of Computer Application",
       universityName: "University of Mumbai",
       duration: "2025",
-      grade: "",
+      grade: "8.44 CGPA",
     ),
     EducationModel(
       instituteName: "Shri Bhausaheb Vartak Arts, Commerce & Science College",
@@ -111,17 +111,17 @@ Take the hassle out of tracking student attendance with our smart and intuitive 
     HeaderItemModel(
       title: "LinkedIn",
       imagePath: "./asset/image/linkedin.png",
-      link: "",
+      link: "https://www.linkedin.com/in/vrs30/",
     ),
     HeaderItemModel(
       title: "Google Play",
       imagePath: "./asset/image/google_play_store.png",
-      link: "",
+      link: "https://play.google.com/store/apps/developer?id=Vinayak+Sutar",
     ),
     HeaderItemModel(
       title: "GitHub",
       imagePath: "./asset/image/github.png",
-      link: "",
+      link: "https://github.com/vrs600",
     ),
   ];
 
